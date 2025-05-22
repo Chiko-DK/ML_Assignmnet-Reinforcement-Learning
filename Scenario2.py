@@ -1,11 +1,12 @@
 import numpy as np
 import random
+import argparse
 from FourRooms import FourRooms
 import matplotlib.pyplot as plt
 
 # Hyperparameters
 EPISODES = 1000
-ALPHA = 0.8  # Learning rate
+ALPHA = 0.4
 GAMMA = 0.95
 EPSILON = 0.1
 ACTIONS = [FourRooms.UP, FourRooms.DOWN, FourRooms.LEFT, FourRooms.RIGHT]
@@ -19,7 +20,14 @@ def choose_action(Q, state, epsilon):
     return max(Q[state], key=Q[state].get)
 
 def main():
-    fourRoomObj = FourRooms(scenario='multi', stochastic=False)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--stochastic', '-s', action='store_true', help='Use stochastic actions')
+    args = parser.parse_args()
+
+    fourRoomObj = FourRooms(scenario='multi', stochastic=args.stochastic)
+    if args.stochastic:
+        print("Stochastic actions enabled.")
+
     Q = {}
     rewards = []
 

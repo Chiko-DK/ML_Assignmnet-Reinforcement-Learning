@@ -1,16 +1,16 @@
 import numpy as np
 import random
+import argparse
 from FourRooms import FourRooms
 
 # Hyperparameters
 EPISODES = 500
-ALPHA = 0.1      # Learning rate
-GAMMA = 0.95     # Discount factor
-EPSILON = 0.1    # Exploration rate
+ALPHA = 0.1
+GAMMA = 0.95
+EPSILON = 0.1
 
 ACTIONS = [FourRooms.UP, FourRooms.DOWN, FourRooms.LEFT, FourRooms.RIGHT]
 
-# Returns a state representation
 def get_state(pos, packages_left):
     return (pos[0], pos[1], packages_left)
 
@@ -20,11 +20,16 @@ def choose_action(Q, state):
         return random.choice(ACTIONS)
     return max(Q[state], key=Q[state].get)
 
-# Initialize fourRoomsObjironment
-fourRoomsObj = FourRooms(scenario='simple', stochastic=False)
-print('Agent starts at: {0}'.format(fourRoomsObj.getPosition()))
+parser = argparse.ArgumentParser()
+parser.add_argument('--stochastic', '-s', action='store_true', help='Use stochastic actions')
+args = parser.parse_args()
 
-Q = {}  # Q-table
+# Initialize fourRoomsObject
+fourRoomsObj = FourRooms(scenario='simple', stochastic=args.stochastic)
+if args.stochastic:
+    print("Stochastic actions enabled.")
+
+Q = {}  # Q-value
 
 for episode in range(EPISODES):
     fourRoomsObj.newEpoch()
@@ -54,4 +59,5 @@ for episode in range(EPISODES):
         print(f"Episode {episode + 1}: Total reward = {total_reward}")
 
 # Show final path
+print("Training complete. Showing final path...")
 fourRoomsObj.showPath(-1)
